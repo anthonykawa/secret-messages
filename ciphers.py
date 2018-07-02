@@ -1,5 +1,12 @@
 ALPHABET = list("abcdefghijklmnopqrstuvwxyz")
 
+def run():
+    message = Affine("This is the message that I'd like you to know!!", 1, 8)
+    message.encrypt()
+    print(message.encrypted_message)
+    message.decrypt()
+    print(message.decrypted_message)
+
 class Cipher:
     def __init__(self, message):
         self.message = message
@@ -48,9 +55,6 @@ class Keyword(Cipher):
                 List.append(" ")
         self.decrypted_message = "".join(List)
 
-    def run():
-        pass
-
 class Polybius(Cipher):
     def __init__(self, message):
         super().__init__(message)
@@ -61,8 +65,28 @@ class Affine(Cipher):
         self.keya = keya
         self.keyb = keyb
     
+    def inverse_mod(self, keya, mod):
+        for _ in range(1,mod):
+            if ( mod * _ + 1) % keya == 0:
+                return ( mod * _ + 1) // keya
+        return None
+
     def encrypt(self):
-        for _ in range(26):
-            print(chr(_ + 65) + ": " + chr(((self.keya + _ + self.keyb) % 26) + 65))
+        for char in self.message:
+            if char.lower() in ALPHABET:
+                char_index = ALPHABET.index(char.lower())
+                self.encrypted_message += ALPHABET[(char_index * self.keya + self.keyb) % len(ALPHABET)]
+            else:
+                self.encrypted_message += char
+
+    def decrypt(self):
+        mod_inverse_keya = self.inverse_mod(self.keya, len(ALPHABET))
+        for char in self.encrypted_message:
+            if char.lower() in ALPHABET:
+                char_index = ALPHABET.index(char.lower())
+                self.decrypted_message += ALPHABET[(char_index - self.keyb) * mod_inverse_keya % len(ALPHABET)]
+            else:
+                self.decrypted_message += char
+
 if __name__ == "__main__":
     run()
