@@ -48,17 +48,21 @@ class Keyword(Cipher):
                 List.append(" ")
         self.decrypted_message = "".join(List)
 
+    def run():
+        pass
 
-keyword = "friendly"
-message = "This is a message"
+class Polybius(Cipher):
+    def __init__(self, message):
+        super().__init__(message)
 
-a = Keyword(message, keyword)
-print(a.cipher_key)
-print(a.decipher_key)
-a.encrypt()
-print(a.encrypted_message)
-a.decrypt()
-print(a.decrypted_message)
-
-
-
+class Affine(Cipher):
+    def __init__(self, message, keya, keyb):
+        super().__init__(message)
+        self.keya = keya
+        self.keyb = keyb
+    
+    def encrypt(self):
+        for _ in range(26):
+            print(chr(_ + 65) + ": " + chr(((self.keya + _ + self.keyb) % 26) + 65))
+if __name__ == "__main__":
+    run()
